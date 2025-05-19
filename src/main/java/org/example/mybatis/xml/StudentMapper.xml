@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.persistence.mybatis.StudentsDAOMyBatis">
+
+    <resultMap id="StudentResultMap" type="org.example.mybatis.model.Student">
+        <id property="id" column="id" />
+        <result property="firstName" column="first_name" />
+        <result property="lastName" column="last_name" />
+        <result property="email" column="email" />
+        <result property="registrationDate" column="registration_date" />
+        <result property="facultyId" column="faculty_id" />
+        <association property="faculty" column="faculty_id" select="org.example.persistence.mybatis.FacultiesDAOMyBatis.selectById" />
+        <collection property="courses" column="id" select="selectCoursesForStudent" />
+    </resultMap>
+
+    <select id="selectAll" resultMap="StudentResultMap">
+        SELECT * FROM students
+        ORDER BY last_name, first_name
+    </select>
+
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="StudentResultMap">
+        SELECT * FROM students
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByFacultyId" parameterType="java.lang.Integer" resultMap="StudentResultMap">
+        SELECT * FROM students
+        WHERE faculty_id = #{facultyId}
+        ORDER BY last_name, first_name
+    </select>
+
+    <select id="selectByCourseId" parameterType="java.lang.Integer" resultMap="StudentResultMap">
+        SELECT s.* FROM students s
+        JOIN student_courses sc ON s.id = sc.student_id
+        WHERE sc.course_id = #{courseId}
+        ORDER BY s.last_name, s.first_name
+    </select>
+
+    <select id="selectCoursesForStudent" parameterType="java.lang.Integer" resultMap="org.example.persistence.mybatis.CoursesDAOMyBatis.CourseResultMap">
+        SELECT c.* FROM courses c
+        JOIN student_courses sc ON c.id = sc.course_id
+        WHERE sc.student_id = #{id}
+        ORDER BY c.title
+    </select>
+
+    <insert id="insert" parameterType="org.example.mybatis.model.Student" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO students (first_name, last_name, email, faculty_id)
+        VALUES (#{firstName}, #{lastName}, #{email}, #{facultyId})
+    </insert>
+
+    <update id="update" parameterType="org.example.mybatis.model.Student">
+        UPDATE students
+        SET first_name = #{firstName},
+        last_name = #{lastName},
+        email = #{email},
+        faculty_id = #{facultyId}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        DELETE FROM students
+        WHERE id = #{id}
+    </delete>
+
+    <insert id="insertStudentCourse">
+        INSERT INTO student_courses (student_id, course_id)
+        VALUES (#{param1}, #{param2})
+    </insert>
+
+    <delete id="deleteStudentCourse">
+        DELETE FROM student_courses
+        WHERE student_id = #{param1} AND course_id = #{param2}
+    </delete>
+</mapper>

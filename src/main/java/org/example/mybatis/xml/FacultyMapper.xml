@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.persistence.mybatis.FacultiesDAOMyBatis">
+
+    <resultMap id="FacultyResultMap" type="org.example.mybatis.model.Faculty">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="createdAt" column="created_at" />
+        <collection property="students" column="id" select="selectStudentsForFaculty" />
+        <collection property="courses" column="id" select="selectCoursesForFaculty" />
+    </resultMap>
+
+    <select id="selectAll" resultMap="FacultyResultMap">
+        SELECT * FROM faculties
+        ORDER BY name
+    </select>
+
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="FacultyResultMap">
+        SELECT * FROM faculties
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectStudentsForFaculty" parameterType="java.lang.Integer" resultMap="org.example.persistence.mybatis.StudentsDAOMyBatis.StudentResultMap">
+        SELECT * FROM students
+        WHERE faculty_id = #{id}
+        ORDER BY last_name, first_name
+    </select>
+
+    <select id="selectCoursesForFaculty" parameterType="java.lang.Integer" resultMap="org.example.persistence.mybatis.CoursesDAOMyBatis.CourseResultMap">
+        SELECT * FROM courses
+        WHERE faculty_id = #{id}
+        ORDER BY title
+    </select>
+
+    <insert id="insert" parameterType="org.example.mybatis.model.Faculty" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO faculties (name)
+        VALUES (#{name})
+    </insert>
+
+    <update id="update" parameterType="org.example.mybatis.model.Faculty">
+        UPDATE faculties
+        SET name = #{name}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        DELETE FROM faculties
+        WHERE id = #{id}
+    </delete>
+</mapper>

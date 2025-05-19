@@ -1,0 +1,10 @@
+<Resource name="jdbc/CoursesDB"
+          auth="Container"
+          type="javax.sql.DataSource"
+          driverClassName="org.postgresql.Driver"
+          url="jdbc:postgresql://localhost:5432/coursesdb"
+          username="your_db_user"
+          password="your_db_password"
+          maxTotal="20"
+          maxIdle="10"
+          maxWaitMillis="-1"/>

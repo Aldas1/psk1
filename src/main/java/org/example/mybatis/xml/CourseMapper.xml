@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.persistence.mybatis.CoursesDAOMyBatis">
+
+    <resultMap id="CourseResultMap" type="org.example.mybatis.model.Course">
+        <id property="id" column="id" />
+        <result property="title" column="title" />
+        <result property="description" column="description" />
+        <result property="credits" column="credits" />
+        <result property="facultyId" column="faculty_id" />
+        <association property="faculty" column="faculty_id" select="org.example.persistence.mybatis.FacultiesDAOMyBatis.selectById" />
+        <collection property="students" column="id" select="selectStudentsForCourse" />
+    </resultMap>
+
+    <select id="selectAll" resultMap="CourseResultMap">
+        SELECT * FROM courses
+        ORDER BY title
+    </select>
+
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="CourseResultMap">
+        SELECT * FROM courses
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByFacultyId" parameterType="java.lang.Integer" resultMap="CourseResultMap">
+        SELECT * FROM courses
+        WHERE faculty_id = #{facultyId}
+        ORDER BY title
+    </select>
+
+    <select id="selectByStudentId" parameterType="java.lang.Integer" resultMap="CourseResultMap">
+        SELECT c.* FROM courses c
+        JOIN student_courses sc ON c.id = sc.course_id
+        WHERE sc.student_id = #{studentId}
+        ORDER BY c.title
+    </select>
+
+    <select id="selectStudentsForCourse" parameterType="java.lang.Integer" resultMap="org.example.persistence.mybatis.StudentsDAOMyBatis.StudentResultMap">
+        SELECT s.* FROM students s
+        JOIN student_courses sc ON s.id = sc.student_id
+        WHERE sc.course_id = #{id}
+        ORDER BY s.last_name, s.first_name
+    </select>
+
+    <insert id="insert" parameterType="org.example.mybatis.model.Course" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO courses (title, description, credits, faculty_id)
+        VALUES (#{title}, #{description}, #{credits}, #{facultyId})
+    </insert>
+
+    <update id="update" parameterType="org.example.mybatis.model.Course">
+        UPDATE courses
+        SET title = #{title},
+        description = #{description},
+        credits = #{credits},
+        faculty_id = #{facultyId}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        DELETE FROM courses
+        WHERE id = #{id}
+    </delete>
+</mapper>
