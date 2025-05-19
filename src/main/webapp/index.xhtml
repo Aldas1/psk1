@@ -1,24 +1,123 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 <h:head>
     <title>Course Registration System</title>
+    <style>
+        .container { width: 80%; margin: 0 auto; }
+        .welcome-panel { margin-bottom: 30px; padding: 20px; background-color: #f9f9f9; border-radius: 5px; border: 1px solid #ddd; }
+        .welcome-panel h1 { margin-top: 0; color: #333; }
+        .stat-container { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .stat-box {
+            flex: 1;
+            margin: 0 10px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .stat-box:first-child { margin-left: 0; }
+        .stat-box:last-child { margin-right: 0; }
+        .stat-number { font-size: 2em; font-weight: bold; color: #2196F3; }
+        .stat-label { font-size: 1.2em; color: #666; }
+        .nav { margin-bottom: 20px; }
+        .nav a {
+            margin-right: 10px;
+            padding: 10px 15px;
+            text-decoration: none;
+            background-color: #2196F3;
+            color: white;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .nav a:hover { background-color: #0b7dda; }
+        .recent-activity { margin-bottom: 30px; }
+        .activity-table { width: 100%; border-collapse: collapse; }
+        .activity-table th, .activity-table td { padding: 12px 8px; text-align: left; border-bottom: 1px solid #ddd; }
+        .activity-table th { background-color: #f2f2f2; }
+    </style>
 </h:head>
 <h:body>
-    <h1>Students</h1>
-    <h:form id="studentForm">
-        <p:dataTable value="#{studentBean.students}" var="student">
-            <p:column headerText="ID">
-                #{student.id}
-            </p:column>
-            <p:column headerText="Name">
-                #{student.name}
-            </p:column>
-            <p:column headerText="Faculty">
-                #{student.facultyId}
-            </p:column>
-        </p:dataTable>
-    </h:form>
+    <div class="container">
+        <div class="welcome-panel">
+            <h1>Welcome to Course Registration System</h1>
+            <p>This system allows you to manage students, faculties, and courses. Use the navigation links below to access different parts of the system.</p>
+        </div>
+
+        <div class="nav">
+            <h:link outcome="faculties" value="Faculties" />
+            <h:link outcome="students" value="Students" />
+            <h:link outcome="courses" value="Courses" />
+        </div>
+
+        <div class="stat-container">
+            <div class="stat-box">
+                <div class="stat-number">#{dashboardBean.studentCount}</div>
+                <div class="stat-label">Students</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">#{dashboardBean.facultyCount}</div>
+                <div class="stat-label">Faculties</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">#{dashboardBean.courseCount}</div>
+                <div class="stat-label">Courses</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">#{dashboardBean.enrollmentCount}</div>
+                <div class="stat-label">Enrollments</div>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <h2>Recent Students</h2>
+            <h:form id="recentStudentsForm">
+                <p:dataTable id="recentStudentsTable" value="#{dashboardBean.recentStudents}" var="student"
+                             styleClass="activity-table" rows="5" emptyMessage="No students found">
+                    <p:column headerText="ID">
+                        <h:outputText value="#{student.id}" />
+                    </p:column>
+                    <p:column headerText="Name">
+                        <h:outputText value="#{student.firstName} #{student.lastName}" />
+                    </p:column>
+                    <p:column headerText="Faculty">
+                        <h:outputText value="#{student.faculty.name}" />
+                    </p:column>
+                    <p:column headerText="Actions">
+                        <h:link outcome="student_details" value="View Details">
+                            <f:param name="id" value="#{student.id}" />
+                        </h:link>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </div>
+
+        <div class="recent-activity">
+            <h2>Recent Courses</h2>
+            <h:form id="recentCoursesForm">
+                <p:dataTable id="recentCoursesTable" value="#{dashboardBean.recentCourses}" var="course"
+                             styleClass="activity-table" rows="5" emptyMessage="No courses found">
+                    <p:column headerText="ID">
+                        <h:outputText value="#{course.id}" />
+                    </p:column>
+                    <p:column headerText="Title">
+                        <h:outputText value="#{course.title}" />
+                    </p:column>
+                    <p:column headerText="Faculty">
+                        <h:outputText value="#{course.faculty.name}" />
+                    </p:column>
+                    <p:column headerText="Actions">
+                        <h:link outcome="course_details" value="View Details">
+                            <f:param name="id" value="#{course.id}" />
+                        </h:link>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </div>
+    </div>
 </h:body>
 </html>
