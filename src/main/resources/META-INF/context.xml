@@ -1,10 +1,10 @@
-<Resource name="jdbc/CoursesDB"
+<Resource name="jdbc/psk1"
           auth="Container"
           type="javax.sql.DataSource"
           driverClassName="org.postgresql.Driver"
           url="jdbc:postgresql://localhost:5432/coursesdb"
-          username="your_db_user"
-          password="your_db_password"
+          username="postgres"
+          password="postgres"
           maxTotal="20"
           maxIdle="10"
           maxWaitMillis="-1"/>

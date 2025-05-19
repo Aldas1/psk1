@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Faculty Details</title>
+    <style>
+        .container { width: 80%; margin: 0 auto; }
+        .detail-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .detail-table th, .detail-table td { padding: 8px; border: 1px solid #ddd; }
+        .detail-table th { background-color: #f2f2f2; }
+        .nav { margin-bottom: 20px; }
+        .nav a { margin-right: 10px; }
+        .section { margin-bottom: 30px; }
+    </style>
+</h:head>
+<h:body>
+    <div class="container">
+        <h1>Faculty Details</h1>
+
+        <div class="nav">
+            <h:link outcome="faculties" value="Faculties" />
+            <h:link outcome="students" value="Students" />
+            <h:link outcome="courses" value="Courses" />
+        </div>
+
+        <f:metadata>
+            <f:viewParam name="id" value="#{facultyDetailBean.facultyId}" />
+            <f:viewAction action="#{facultyDetailBean.init}" />
+        </f:metadata>
+
+        <h:panelGroup rendered="#{facultyDetailBean.faculty != null}">
+            <div class="section">
+                <h2>Faculty Information</h2>
+                <h:panelGrid columns="2" styleClass="detail-table">
+                    <h:outputText value="ID:" />
+                    <h:outputText value="#{facultyDetailBean.faculty.id}" />
+
+                    <h:outputText value="Name:" />
+                    <h:outputText value="#{facultyDetailBean.faculty.name}" />
+
+                    <h:outputText value="Created At:" />
+                    <h:outputText value="#{facultyDetailBean.faculty.createdAt}">
+                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                    </h:outputText>
+                </h:panelGrid>
+            </div>
+
+            <div class="section">
+                <h2>Students in this Faculty</h2>
+                <h:form id="studentsForm">
+                    <p:dataTable id="studentsTable" value="#{facultyDetailBean.faculty.students}" var="student" styleClass="detail-table"
+                                 emptyMessage="No students in this faculty">
+                        <p:column headerText="ID">
+                            <h:outputText value="#{student.id}" />
+                        </p:column>
+                        <p:column headerText="Name">
+                            <h:outputText value="#{student.firstName} #{student.lastName}" />
+                        </p:column>
+                        <p:column headerText="Email">
+                            <h:outputText value="#{student.email}" />
+                        </p:column>
+                        <p:column headerText="Actions">
+                            <h:link outcome="student_details" value="View Details">
+                                <f:param name="id" value="#{student.id}" />
+                            </h:link>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </div>
+
+            <div class="section">
+                <h2>Courses in this Faculty</h2>
+                <h:form id="coursesForm">
+                    <p:dataTable id="coursesTable" value="#{facultyDetailBean.faculty.courses}" var="course" styleClass="detail-table"
+                                 emptyMessage="No courses in this faculty">
+                        <p:column headerText="ID">
+                            <h:outputText value="#{course.id}" />
+                        </p:column>
+                        <p:column headerText="Title">
+                            <h:outputText value="#{course.title}" />
+                        </p:column>
+                        <p:column headerText="Credits">
+                            <h:outputText value="#{course.credits}" />
+                        </p:column>
+                        <p:column headerText="Actions">
+                            <h:link outcome="course_details" value="View Details">
+                                <f:param name="id" value="#{course.id}" />
+                            </h:link>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{facultyDetailBean.faculty == null}">
+            <p>Faculty not found or has been deleted.</p>
+        </h:panelGroup>
+
+        <div>
+            <h:link outcome="faculties" value="Back to Faculties" />
+        </div>
+    </div>
+</h:body>
+</html>

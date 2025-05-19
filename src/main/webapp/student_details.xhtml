@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Student Details</title>
+    <style>
+        .container { width: 80%; margin: 0 auto; }
+        .detail-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .detail-table th, .detail-table td { padding: 8px; border: 1px solid #ddd; }
+        .detail-table th { background-color: #f2f2f2; }
+        .nav { margin-bottom: 20px; }
+        .nav a { margin-right: 10px; }
+        .section { margin-bottom: 30px; }
+        .form-group { margin-bottom: 15px; }
+        .btn { padding: 6px 12px; margin-right: 5px; }
+    </style>
+</h:head>
+<h:body>
+    <div class="container">
+        <h1>Student Details</h1>
+
+        <div class="nav">
+            <h:link outcome="faculties" value="Faculties" />
+            <h:link outcome="students" value="Students" />
+            <h:link outcome="courses" value="Courses" />
+        </div>
+
+        <f:metadata>
+            <f:viewParam name="id" value="#{studentDetailBean.studentId}" />
+            <f:viewAction action="#{studentDetailBean.init}" />
+        </f:metadata>
+
+        <h:panelGroup rendered="#{studentDetailBean.student != null}">
+            <div class="section">
+                <h2>Student Information</h2>
+                <h:panelGrid columns="2" styleClass="detail-table">
+                    <h:outputText value="ID:" />
+                    <h:outputText value="#{studentDetailBean.student.id}" />
+
+                    <h:outputText value="First Name:" />
+                    <h:outputText value="#{studentDetailBean.student.firstName}" />
+
+                    <h:outputText value="Last Name:" />
+                    <h:outputText value="#{studentDetailBean.student.lastName}" />
+
+                    <h:outputText value="Email:" />
+                    <h:outputText value="#{studentDetailBean.student.email}" />
+
+                    <h:outputText value="Registration Date:" />
+                    <h:outputText value="#{studentDetailBean.student.registrationDate}">
+                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                    </h:outputText>
+
+                    <h:outputText value="Faculty:" />
+                    <h:link outcome="faculty_details" value="#{studentDetailBean.student.faculty.name}">
+                        <f:param name="id" value="#{studentDetailBean.student.faculty.id}" />
+                    </h:link>
+                </h:panelGrid>
+            </div>
+
+            <div class="section">
+                <h2>Enrolled Courses</h2>
+                <h:form id="coursesForm">
+                    <p:dataTable id="coursesTable" value="#{studentDetailBean.student.courses}" var="course" styleClass="detail-table"
+                                 emptyMessage="Not enrolled in any courses">
+                        <p:column headerText="ID">
+                            <h:outputText value="#{course.id}" />
+                        </p:column>
+                        <p:column headerText="Title">
+                            <h:outputText value="#{course.title}" />
+                        </p:column>
+                        <p:column headerText="Description">
+                            <h:outputText value="#{course.description}" />
+                        </p:column>
+                        <p:column headerText="Credits">
+                            <h:outputText value="#{course.credits}" />
+                        </p:column>
+                        <p:column headerText="Actions">
+                            <h:link outcome="course_details" value="View Details">
+                                <f:param name="id" value="#{course.id}" />
+                            </h:link>
+                            <h:commandButton value="Unregister" action="#{studentDetailBean.unregisterFromCourse(course.id)}"
+                                             styleClass="btn"
+                                             onclick="return confirm('Are you sure you want to unregister from this course?');" />
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </div>
+
+            <div class="section">
+                <h2>Register for Course</h2>
+                <h:form id="registerCourseForm">
+                    <div class="form-group">
+                        <h:outputLabel for="availableCourses" value="Available Courses:" />
+                        <h:selectOneMenu id="availableCourses" value="#{studentDetailBean.selectedCourseId}" styleClass="form-control" required="true">
+                            <f:selectItem itemLabel="-- Select Course --" itemValue="" />
+                            <f:selectItems value="#{studentDetailBean.availableCourses}" var="course"
+                                           itemLabel="#{course.title} (#{course.credits} credits)" itemValue="#{course.id}" />
+                        </h:selectOneMenu>
+                        <h:message for="availableCourses" style="color: red;" />
+                    </div>
+
+                    <h:commandButton value="Register for Course" action="#{studentDetailBean.registerForCourse}" styleClass="btn" />
+                </h:form>
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{studentDetailBean.student == null}">
+            <p>Student not found or has been deleted.</p>
+        </h:panelGroup>
+
+        <div>
+            <h:link outcome="students" value="Back to Students" />
+        </div>
+    </div>
+</h:body>
+</html>
