@@ -1,0 +1,57 @@
+/* Container */
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* Tables */
+.detail-table,
+.course-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+.detail-table th,
+.detail-table td,
+.course-table th,
+.course-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+.detail-table th,
+.course-table th {
+    background-color: #f2f2f2;
+}
+
+/* Navigation */
+.nav {
+    margin-bottom: 20px;
+}
+.nav a {
+    margin-right: 10px;
+}
+
+/* Sections */
+.section {
+    margin-bottom: 30px;
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Buttons */
+.btn {
+    padding: 6px 12px;
+    margin-right: 5px;
+}
+
+/* Error messages */
+h\:message[style] {
+    color: red !important;
+}

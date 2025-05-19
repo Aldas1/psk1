@@ -2,9 +2,9 @@
           auth="Container"
           type="javax.sql.DataSource"
           driverClassName="org.postgresql.Driver"
-          url="jdbc:postgresql://localhost:5432/coursesdb"
-          username="postgres"
-          password="postgres"
+          url="jdbc:postgresql://localhost:5432/psk1"
+          username="user1"
+          password="user1"
           maxTotal="20"
           maxIdle="10"
           maxWaitMillis="-1"/>
